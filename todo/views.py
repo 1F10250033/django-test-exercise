@@ -11,13 +11,29 @@ def index(request):
                     due_at=make_aware(parse_datetime(request.POST['due_at'])))
         task.save()
 
+    # base queryset
     if request.GET.get('order') == 'due':
         tasks = Task.objects.order_by('due_at')
     else:
         tasks = Task.objects.order_by('-posted_at')
 
+    # text search filter
+    q = request.GET.get('q', '').strip()
+    if q:
+        tasks = tasks.filter(title__icontains=q)
+
+    # status filter: all / open / closed
+    status = request.GET.get('status', 'all')
+    if status == 'open':
+        tasks = tasks.filter(completed=False)
+    elif status == 'closed':
+        tasks = tasks.filter(completed=True)
+
     context = {
-        'tasks': tasks
+        'tasks': tasks,
+        'current_q': q,
+        'current_status': status,
+        'current_order': request.GET.get('order', 'post')
     }
     return render(request, 'todo/index.html', context)
 

@@ -29,8 +29,22 @@
     <br>
 
     <div>
-      <a href="{% url 'index' %}?order=due">Sort by Due Date</a> |
-      <a href="{% url 'index' %}?order=post">Sort by Posted Date</a>
+      <form method="get" action="{% url 'index' %}">
+        <label for="qInput">Search:</label>
+        <input id="qInput" name="q" type="text" value="{{ current_q }}" placeholder="Search title">
+        <label for="statusSelect">Status:</label>
+        <select id="statusSelect" name="status">
+          <option value="all" {% if current_status == 'all' %}selected{% endif %}>All</option>
+          <option value="open" {% if current_status == 'open' %}selected{% endif %}>Open</option>
+          <option value="closed" {% if current_status == 'closed' %}selected{% endif %}>Closed</option>
+        </select>
+        <input type="hidden" name="order" value="{{ current_order }}">
+        <button type="submit">Filter</button>
+      </form>
+      <div style="margin-top:8px">
+        <a href="{% url 'index' %}?order=due{% if current_status %}&status={{ current_status }}{% endif %}{% if current_q %}&q={{ current_q }}{% endif %}">Sort by Due Date</a> |
+        <a href="{% url 'index' %}?order=post{% if current_status %}&status={{ current_status }}{% endif %}{% if current_q %}&q={{ current_q }}{% endif %}">Sort by Posted Date</a>
+      </div>
     </div>
 
     {% for task in tasks %}
