@@ -61,6 +61,15 @@
         <li>Status: Not Completed</li>
         {% endif %}
       </ul>
+      <div>
+        {% if task.completed %}
+        <a href="{% url 'close' task.id %}">Reopen</a>
+        {% else %}
+        <a href="{% url 'close' task.id %}">Complete</a>
+        {% endif %}
+        | <a href="{% url 'detail' task.id %}">Detail</a>
+        | <a href="{% url 'delete' task.id %}">Delete</a>
+      </div>
     </div>
     {% endfor %}
   </body>
